@@ -1,0 +1,1 @@
+# armazenamento_distribuido_Cloud-Native_rook.io-ceph
