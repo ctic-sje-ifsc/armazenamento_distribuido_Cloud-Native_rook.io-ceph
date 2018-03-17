@@ -71,7 +71,7 @@ Consumir o PVC criado utilizando o nome, por exemplo nesse caso:
  existingClaim: pvclaim-0
  ```
 
-* Ou em um *deploy/pod*:
+* Ou em um *deploy/pod*:  
 [...]
 ```yml
      volumes:
