@@ -2,9 +2,29 @@
 
 Neste repositório é descrita a configuração e instalação do [ROOK](https://rook.io/), um serviço de armazenamento distribuído para ambientes *Cloud-Native*, em cima de nosso [cluster kubernetes](https://github.com/ctic-sje-ifsc/baremetal_rancherOS_rke_kubernetes). 
 
-O primeiro passo é implantar os componentes do sistema Rook, que incluem o agente Rook executado em cada nó no seu cluster, bem como o pod do Rook *operator*:
+[Instalar Operator via Helm Chart](https://rook.io/docs/rook/master/helm-operator.html): 
 
-```$ kubectl create -f rook-operator.yaml```  
+Configurações do RBAC:
+
+Create a ServiceAccount for Tiller in the `kube-system` namespace   
+```$ kubectl --namespace kube-system create sa tiller```
+
+Create a ClusterRoleBinding for Tiller   
+```$ kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller```
+
+Patch Tiller's Deployment to use the new ServiceAccount   
+```$ kubectl --namespace kube-system patch deploy/tiller-deploy -p '{"spec": {"template": {"spec": {"serviceAccountName": "tiller"}}}}'```
+
+
+Adicionar o repositório do rook-master:   
+
+```$ helm repo add rook-master https://charts.rook.io/master```
+
+Verificar se está disponível:   
+```$ helm search rook```
+
+Instalar o rook operator via helm:   
+```$ helm install --namespace rook-system rook-master/rook --version v0.7.0-98.gabe882a```
 
 Verificar o *status* dos *pods* até que todos estejam em *Running*:
 
