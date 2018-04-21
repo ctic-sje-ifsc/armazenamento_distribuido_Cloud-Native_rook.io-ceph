@@ -6,50 +6,73 @@ Neste repositório é descrita a configuração e instalação do [ROOK](https:/
 
 Configurações do RBAC:
 
-Create a ServiceAccount for Tiller in the `kube-system` namespace   
-```$ kubectl --namespace kube-system create sa tiller```
+Criar a ServiceAccount para o Tiller no namespace `kube-system`   
+```
+$ kubectl --namespace kube-system create sa tiller
+```
 
-Create a ClusterRoleBinding for Tiller   
-```$ kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller```
+Criar um ClusterRoleBinding para o Tiller   
+```
+$ kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+```
 
-Patch Tiller's Deployment to use the new ServiceAccount   
-```$ kubectl --namespace kube-system patch deploy/tiller-deploy -p '{"spec": {"template": {"spec": {"serviceAccountName": "tiller"}}}}'```
-
+Patch Tiller's Deployment para usar o novo ServiceAccount   
+```
+$ kubectl --namespace kube-system patch deploy/tiller-deploy -p '{"spec": {"template": {"spec": {"serviceAccountName": "tiller"}}}}'
+```
 
 Adicionar o repositório do rook-master:   
 
-```$ helm repo add rook-master https://charts.rook.io/master```
+```
+$ helm repo add rook-master https://charts.rook.io/master
+```
 
 Verificar se está disponível:   
-```$ helm search rook```
+```
+$ helm search rook
+```
 
 Instalar o rook operator via helm:   
-```$ helm install --namespace rook-system rook-master/rook --version v0.7.0-98.gabe882a```
+```
+$ helm install --namespace rook-system rook-master/rook --version v0.7.0-98.gabe882a
+```
 
 Verificar o *status* dos *pods* até que todos estejam em *Running*:
 
-```$ kubectl -n rook-system get pod```  
+```
+$ kubectl -n rook-system get pod
+```  
 
 Agora que o Rook *operator* e Rook *agent* estão em execução, é possível criar o *cluster* Rook:  
 
-```$ kubectl create -f rook-cluster.yaml```
+```
+$ kubectl create -f rook-cluster.yaml
+```
 
 Verificar se os pods rook-ceph-ods-XX, rook-ceph-ceph-monX, rook-ceph-mgr0 e rook-api estão em *Running*:  
 
-```$ kubectl -n rook get pod```  
+```
+$ kubectl -n rook get pod
+```  
 	
 Criar o Rook Toolbox:
 
-```$ kubectl create -f rook-tools.yaml```  
-```$ kubectl -n rook get pod rook-tools```
+```
+$ kubectl create -f rook-tools.yaml  
+$ kubectl -n rook get pod rook-tools
+```
 
 Acessar o toolbox:  
 
-```$ kubectl -n rook exec -it rook-tools bash```
+```
+$ kubectl -n rook exec -it rook-tools bash
+```
 
 Criar o Block Storage/Storage Class:
 
-```$ kubectl create -f rook-storageclass.yaml```  
+```
+$ kubectl create -f rook-storageclass.yaml
+```  
 
 
 ## Consumindo um armazenamento persistente criando o PVC.
@@ -77,11 +100,15 @@ spec:
 
 Descobrir o nome do PV criado:
 
-```$ kubectl get pv```
+```
+$ kubectl get pv
+```
 
 Mudar o ReclaimPolicy para Retain do PV criado:
 
-```$ kubectl patch pv -p '{"spec": {"persistentVolumeReclaimPolicy":"Retain"}}' pvc-XXXXX...```
+```
+$ kubectl patch pv -p '{"spec": {"persistentVolumeReclaimPolicy":"Retain"}}' pvc-XXXXX...
+```
 
 
 Consumir o PVC criado utilizando o nome, por exemplo nesse caso:
